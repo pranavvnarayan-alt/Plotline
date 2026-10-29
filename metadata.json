@@ -1,0 +1,6 @@
+{
+  "name": "Plotline",
+  "description": "A thoughtful, curious and trustworthy conversational movie-discovery companion.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
