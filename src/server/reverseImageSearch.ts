@@ -16,16 +16,25 @@ export interface ReverseImageResult {
   rawSummary?: string;
 }
 
+export function getApifyApiToken(): string | undefined {
+  return (
+    process.env.APIFY_API_TOKEN ||
+    process.env.APIFY_TOKEN ||
+    process.env.Imagereversesearch_KEY ||
+    process.env.IMAGEREVERSESEARCH_KEY
+  )?.trim();
+}
+
 /**
  * Executes or prepares web reverse image search.
- * If APIFY_API_TOKEN is provided in environment variables, queries the Apify Google Lens actor.
+ * If APIFY_API_TOKEN or Imagereversesearch_KEY is provided in secrets, queries the Apify Google Lens actor.
  */
 export async function performReverseImageSearch(
   base64Data: string,
   mimeType: string,
   userNotes?: string
 ): Promise<ReverseImageResult> {
-  const apifyToken = process.env.APIFY_API_TOKEN;
+  const apifyToken = getApifyApiToken();
 
   if (apifyToken && apifyToken.trim() !== '') {
     try {

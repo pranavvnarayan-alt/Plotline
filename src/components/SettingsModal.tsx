@@ -589,7 +589,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 </li>
                 <li>
-                  <strong className="text-stone-200">Model selection:</strong> Defaults to <code className="text-amber-300 font-mono">google/gemini-2.5-flash</code>. You can optionally set <code className="text-amber-300 font-mono">OPENROUTER_MODEL</code> to any OpenRouter model.
+                  <strong className="text-stone-200">Model selection:</strong> Defaults to <code className="text-amber-300 font-mono">google/gemini-3.8-flash</code> (with automatic fallback to <code className="text-amber-300 font-mono">google/gemini-3.1-flash-lite</code>).
                 </li>
                 <li>
                   <strong className="text-stone-200">Zero-config Vercel Serverless:</strong> <code className="text-stone-200 font-mono">vercel.json</code> and <code className="text-stone-200 font-mono">api/index.ts</code> are already generated and ready for instant deployment.

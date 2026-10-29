@@ -33,10 +33,10 @@ export const UNIFIED_MODEL_MAPPINGS: ModelTierMapping[] = [
   },
   {
     tier: 3,
-    label: 'Secondary Stability Fallback',
-    googleModel: 'gemini-2.5-flash',
-    openRouterModel: 'google/gemini-2.5-flash',
-    description: 'Proven multi-token context fallback for global reliability.',
+    label: 'Dynamic Alias Fallback',
+    googleModel: 'gemini-flash-latest',
+    openRouterModel: 'google/gemini-flash-latest',
+    description: 'Dynamic alias resolving to the latest active Flash release.',
   },
 ];
 
@@ -49,10 +49,21 @@ export function getGoogleCandidateModels(): string[] {
 
 /**
  * Retrieves the ordered candidate model list for OpenRouter API.
- * Allows optional OPENROUTER_MODEL env override if user specifically designates a preferred tier.
+ * Automatically sanitizes deprecated models (e.g. gemini-2.5-flash) to gemini-3.8-flash.
  */
 export function getOpenRouterCandidateModels(): string[] {
-  const customModel = process.env.OPENROUTER_MODEL?.trim();
+  let customModel = process.env.OPENROUTER_MODEL?.trim();
+
+  // Safeguard: automatically upgrade deprecated gemini-2.5-flash to gemini-3.8-flash
+  if (
+    customModel === 'google/gemini-2.5-flash' ||
+    customModel === 'gemini-2.5-flash' ||
+    customModel === 'google/gemini-2.0-flash' ||
+    customModel === 'gemini-2.0-flash'
+  ) {
+    customModel = 'google/gemini-3.8-flash';
+  }
+
   const defaultList = UNIFIED_MODEL_MAPPINGS.map((m) => m.openRouterModel);
 
   if (customModel && !defaultList.includes(customModel)) {

@@ -28,47 +28,71 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
     }
   };
 
-  // Helper to format assistant markdown-like bold and bullet text simply and cleanly
+  // Helper to format assistant markdown-like bold and bullet text simply and cleanly without raw hashtags
   const renderFormattedText = (text: string) => {
-    const paragraphs = text.split('\n\n').filter(Boolean);
+    const cleanedText = text
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/(?<=\n|\s)#{1,6}\s+/g, '');
+
+    const paragraphs = cleanedText.split('\n\n').filter(Boolean);
 
     return paragraphs.map((para, pIdx) => {
-      // Check if this paragraph is a list of lines
-      if (para.includes('\n- ') || para.startsWith('- ') || para.startsWith('* ')) {
-        const lines = para.split('\n');
+      const lines = para.split('\n').map((l) => l.replace(/^#{1,6}\s+/, '').trim()).filter(Boolean);
+
+      // Check if this paragraph contains bullet lines
+      const hasBullets = lines.some((l) => /^[-*•]\s+/.test(l));
+      if (hasBullets) {
+        const introLines = lines.filter((l) => !/^[-*•]\s+/.test(l));
+        const bulletLines = lines.filter((l) => /^[-*•]\s+/.test(l));
+
         return (
-          <ul key={pIdx} className="list-disc list-inside space-y-1.5 my-2 text-stone-300">
-            {lines.map((line, lIdx) => {
-              const cleanLine = line.replace(/^[-*]\s*/, '');
-              return (
-                <li key={lIdx} className="text-sm leading-relaxed">
-                  <span dangerouslySetInnerHTML={{ __html: formatInline(cleanLine) }} />
-                </li>
-              );
-            })}
-          </ul>
+          <div key={pIdx} className="my-2.5 space-y-1.5">
+            {introLines.map((intro, iIdx) => (
+              <p
+                key={`intro-${iIdx}`}
+                className="text-sm leading-relaxed text-stone-200"
+                dangerouslySetInnerHTML={{ __html: formatInline(intro) }}
+              />
+            ))}
+            <ul className="list-disc list-inside space-y-1.5 text-stone-300">
+              {bulletLines.map((line, lIdx) => {
+                const cleanLine = line.replace(/^[-*•]\s*/, '');
+                return (
+                  <li key={lIdx} className="text-sm leading-relaxed">
+                    <span dangerouslySetInnerHTML={{ __html: formatInline(cleanLine) }} />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         );
       }
 
       return (
         <p
           key={pIdx}
-          className="text-sm leading-relaxed my-2 text-stone-200"
-          dangerouslySetInnerHTML={{ __html: formatInline(para) }}
+          className="text-sm leading-relaxed my-2.5 text-stone-200"
+          dangerouslySetInnerHTML={{ __html: formatInline(lines.join(' ')) }}
         />
       );
     });
   };
 
   const formatInline = (str: string): string => {
-    // Escape HTML first for safety
+    // Escape HTML first for safety and strip any stray heading # markers
     const safe = str
+      .replace(/^#{1,6}\s+/g, '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    // Replace bold **text** with styled strong
+    // Normalize ***bold italic*** first
     let formatted = safe.replace(
+      /\*\*\*(.*?)\*\*\*/g,
+      '<strong class="text-amber-300 font-semibold italic">$1</strong>'
+    );
+    // Replace bold **text** with styled strong
+    formatted = formatted.replace(
       /\*\*(.*?)\*\*/g,
       '<strong class="text-amber-300 font-semibold">$1</strong>'
     );

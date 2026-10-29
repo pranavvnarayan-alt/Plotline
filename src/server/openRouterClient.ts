@@ -35,9 +35,19 @@ export function getOpenRouterApiKey(): string {
 
 /**
  * Primary model on OpenRouter, mapped 1:1 to Google's primary flagship model (google/gemini-3.8-flash).
+ * Automatically upgrades deprecated model IDs.
  */
 export function getOpenRouterModel(): string {
-  return process.env.OPENROUTER_MODEL || UNIFIED_MODEL_MAPPINGS[0].openRouterModel;
+  const customModel = process.env.OPENROUTER_MODEL?.trim();
+  if (
+    customModel === 'google/gemini-2.5-flash' ||
+    customModel === 'gemini-2.5-flash' ||
+    customModel === 'google/gemini-2.0-flash' ||
+    customModel === 'gemini-2.0-flash'
+  ) {
+    return UNIFIED_MODEL_MAPPINGS[0].openRouterModel;
+  }
+  return customModel || UNIFIED_MODEL_MAPPINGS[0].openRouterModel;
 }
 
 /**
@@ -98,7 +108,7 @@ export async function chatWithOpenRouter(
   } else {
     messages.push({
       role: 'user',
-      content: options.message,
+      content: reverseNotes ? `${reverseNotes}\n${options.message}` : options.message,
     });
   }
 

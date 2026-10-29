@@ -11,7 +11,8 @@ import dotenv from 'dotenv';
 import { chatWithPlotline, generateSpeechAudio } from './src/server/geminiClient';
 import { getSavedPreferences, savePreferences, deleteSavedPreferences } from './src/server/preferencesStore';
 import { INITIAL_TEST_SCENARIOS, executeTestScenario } from './src/server/testScenarios';
-import { discover2025Films } from './src/server/tmdb';
+import { discover2025Films, getTMDBApiKey } from './src/server/tmdb';
+import { getApifyApiToken } from './src/server/reverseImageSearch';
 import { isOpenRouterConfigured, getOpenRouterModel } from './src/server/openRouterClient';
 import { SystemStatus } from './src/types';
 
@@ -103,14 +104,16 @@ app.post('/api/tts', async (req: Request, res: Response) => {
 app.get('/api/status', (_req: Request, res: Response) => {
   const isOR = isOpenRouterConfigured();
   const hasGemini = Boolean(process.env.GEMINI_API_KEY && !process.env.GEMINI_API_KEY.startsWith('sk-or-'));
+  const hasTmdb = Boolean(getTMDBApiKey());
+  const hasApify = Boolean(getApifyApiToken());
 
   const status: SystemStatus = {
     gemini_configured: hasGemini,
     openrouter_configured: isOR,
     active_provider: isOR ? 'openrouter' : 'google',
     model_name: isOR ? getOpenRouterModel() : 'gemini-3.8-flash',
-    tmdb_configured: Boolean(process.env.TMDB_API_KEY && process.env.TMDB_API_KEY.trim() !== ''),
-    apify_configured: Boolean(process.env.APIFY_API_TOKEN && process.env.APIFY_API_TOKEN.trim() !== ''),
+    tmdb_configured: hasTmdb,
+    apify_configured: hasApify,
     voice_status: {
       available: true,
       mode: isOR ? 'Browser Web Speech Synthesis + Dictation' : 'Gemini 3.8 Flash Lite TTS + Browser Speech Recognition',
@@ -131,13 +134,14 @@ app.get('/api/status', (_req: Request, res: Response) => {
 app.get('/api/tmdb/discover-2025', async (req: Request, res: Response) => {
   try {
     const region = (req.query.region as string) || 'IN';
+    const hasTmdb = Boolean(getTMDBApiKey());
     const films = await discover2025Films(region);
     res.json({
-      configured: Boolean(process.env.TMDB_API_KEY && process.env.TMDB_API_KEY.trim() !== ''),
+      configured: hasTmdb,
       films,
-      notice: process.env.TMDB_API_KEY
+      notice: hasTmdb
         ? 'Live TMDB catalog connected for post-January 2025 releases.'
-        : 'TMDB_API_KEY not configured. To extend live access for films after January 2025, add TMDB_API_KEY in the AI Studio Secrets panel.',
+        : 'TMDB API key not configured. To extend live access for films after January 2025 and 2026 upcoming films, add ImDb_KEY or TMDB_API_KEY in the AI Studio Secrets panel.',
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message || 'Failed to fetch 2025 releases.' });
