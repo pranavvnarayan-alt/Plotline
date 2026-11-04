@@ -4,113 +4,211 @@
  */
 
 import React from 'react';
-import { Film, Search, Globe, Ticket, Clock, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, PenTool } from 'lucide-react';
+import { PersonaStyle } from '../types';
+import { PlotlineLogo } from './PlotlineLogo';
 
 interface WelcomeStateProps {
   onSelectStarter: (prompt: string) => void;
+  activePersona?: PersonaStyle;
+  onPersonaChange?: (persona: PersonaStyle) => void;
 }
 
-export const WelcomeState: React.FC<WelcomeStateProps> = ({ onSelectStarter }) => {
-  const starters = [
-    {
-      title: 'Find a film for my mood',
-      description: 'Under 2 hours, thoughtful but not depressing, with a grounded social theme.',
-      prompt: 'I want a thoughtful film under 120 minutes, not too bleak, with a grounded social theme.',
-      icon: Clock,
-      badge: 'Mood & Time',
-    },
-    {
-      title: 'Help me identify a film',
-      description: 'Remember a scene, actor detail, or plot premise from a forgotten movie.',
-      prompt: 'Can you help me identify a movie? A man keeps reliving the exact same day in a small town.',
-      icon: Search,
-      badge: 'Detective',
-    },
-    {
-      title: 'Explore Indian & World Cinema',
-      description: 'Discover acclaimed Malayalam, Tamil, Hindi, Bengali, or international gems.',
-      prompt: 'Recommend 3 acclaimed films exploring themes of identity and homecoming across Indian regional or international cinema.',
-      icon: Globe,
-      badge: 'Cinephile',
-    },
-    {
-      title: 'Where can I watch in India?',
-      description: 'Check verified Indian OTT (Hotstar, JioCinema, Prime, Netflix) or BookMyShow showtimes.',
-      prompt: 'Where can I watch Aavesham or 12th Fail in India right now? Please check verified streaming platforms.',
-      icon: Ticket,
-      badge: 'India OTT & Theatres',
-    },
-  ];
-
+export const WelcomeState: React.FC<WelcomeStateProps> = ({
+  onSelectStarter,
+}) => {
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4 text-center">
-      {/* Visual Ticket Motif */}
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase tracking-widest mb-4">
-        <Film className="w-3.5 h-3.5" />
-        <span>CINEMATIC DISCOVERY COMPANION &bull; INDIA (IN)</span>
+    <div className="w-full max-w-4xl mx-auto py-2 sm:py-3">
+      {/* Top Editorial Header Row */}
+      <div className="mb-3">
+        <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-black dark:text-white">
+          Cinema Guide
+        </h2>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-serif text-stone-100 tracking-tight mb-3">
-        Cinema discovered through conversation.
-      </h1>
-
-      <p className="text-sm sm:text-base text-stone-300 max-w-lg mx-auto leading-relaxed mb-8">
-        Plotline helps you uncover forgotten films, discover Indian and global cinema tailored to your mood and language, and find where to watch across Indian OTT platforms and local cinemas via BookMyShow.
+      {/* Concise Editorial Lead Paragraph */}
+      <p className="text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 max-w-xl leading-relaxed mb-5 sm:mb-6 font-normal">
+        We emphasized conversational discovery with live verified catalog records and clear, readable Geist typography.
+        Uncover forgotten films, check real audience reviews, and navigate Indian OTT &amp; theatrical listings with ease.
       </p>
 
-      {/* Suggested Starter Prompts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-8">
-        {starters.map((starter) => {
-          const Icon = starter.icon;
-          return (
-            <button
-              key={starter.title}
-              onClick={() => onSelectStarter(starter.prompt)}
-              className="group p-4 rounded-xl bg-[#141517] hover:bg-[#1b1d20] border border-white/5 hover:border-amber-500/30 transition-all text-left flex flex-col justify-between shadow-sm hover:shadow-md hover:shadow-black/40"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-white/5 text-stone-300 group-hover:text-amber-300 group-hover:bg-amber-500/10 transition-colors">
-                    {starter.badge}
-                  </span>
-                  <Icon className="w-4 h-4 text-stone-500 group-hover:text-amber-400 transition-colors" />
-                </div>
-                <h2 className="text-sm font-medium text-stone-200 group-hover:text-white transition-colors">
-                  {starter.title}
-                </h2>
-                <p className="text-xs text-stone-400 mt-1 line-clamp-2 leading-relaxed">
-                  {starter.description}
-                </p>
-              </div>
-              <span className="text-[11px] text-amber-500/80 font-medium mt-3 flex items-center gap-1 group-hover:text-amber-400">
-                Ask Plotline &rarr;
-              </span>
-            </button>
-          );
-        })}
+      {/* Giant Display Wordmark + Tilted Dual-Badge Pill Motif with the Plotline Logo */}
+      <div className="relative inline-flex items-center mb-6 sm:mb-7 select-none">
+        <h1 className="text-6xl sm:text-7xl md:text-[5.75rem] font-semibold tracking-tighter leading-none text-black dark:text-white">
+          Plotline
+        </h1>
+
+        {/* Signature Tilted Pill Widget (Electric Lime Plotline Logo + >> + Lavender Pink) */}
+        <div
+          className="inline-flex items-center justify-between gap-2.5 sm:gap-3.5 bg-[#222326] text-white px-2 sm:px-2.5 py-1.5 rounded-full shadow-2xl border border-white/10 -ml-4 sm:-ml-6 mt-3 sm:mt-4 -rotate-[24deg] hover:rotate-0 transition-transform duration-200 cursor-pointer"
+          onClick={() =>
+            onSelectStarter(
+              'Recommend 3 acclaimed films under 120 minutes with a grounded social theme and tell me where to stream them in India.'
+            )
+          }
+          title="Start discovering cinema"
+        >
+          <span className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#E7FE55] text-black flex items-center justify-center shadow-inner">
+            <PlotlineLogo className="w-4 h-4 sm:w-5 sm:h-5" />
+          </span>
+          <span className="font-mono text-xs sm:text-sm tracking-tighter text-white/90 px-0.5">
+            &gt;&gt;
+          </span>
+          <span className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#F8D4FE] text-black flex items-center justify-center shadow-inner">
+            <PenTool className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.2]" />
+          </span>
+        </div>
       </div>
 
-      {/* Guarantees per Tech Spec */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-6 border-t border-white/5 text-left text-xs text-stone-400">
-        <div className="flex items-start gap-2">
-          <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <span>
-            <strong className="text-stone-300 block">India OTT & Theatres:</strong> Verifies Hotstar, JioCinema, Prime, Netflix & links to BookMyShow without fake prices.
-          </span>
+      {/* 5-Card Interlocking Bento Grid matching the Style Guide Swatch Layout */}
+      <div className="space-y-3">
+        {/* Top Row: Electric Lime (#E7FE55, Wide) + Lavender Pink (#F8D4FE) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+          {/* Card 1: Electric Lime (#E7FE55) */}
+          <button
+            type="button"
+            onClick={() =>
+              onSelectStarter(
+                'I want a thoughtful film under 120 minutes, not too bleak, with a grounded social theme.'
+              )
+            }
+            className="md:col-span-7 group rounded-[26px] bg-[#E7FE55] text-[#000000] p-5 sm:p-6 min-h-[156px] sm:min-h-[168px] flex flex-col justify-between text-left transition-transform duration-200 hover:-translate-y-0.5 shadow-sm border border-black/5"
+          >
+            <div className="w-full flex items-start justify-between gap-4">
+              <div>
+                <span className="text-lg sm:text-xl font-medium tracking-tight block text-black">
+                  Find a Film for My Mood
+                </span>
+                <p className="text-xs sm:text-sm text-black/75 mt-1 max-w-md leading-relaxed font-normal">
+                  Under 2 hours, thoughtful but not depressing, tailored to your preferred pace and tone.
+                </p>
+              </div>
+              <ArrowUpRight className="w-6 h-6 text-black shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 stroke-[1.75]" />
+            </div>
+
+            <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/80 pt-4 whitespace-nowrap">
+              <span>Discovery Mode :</span>
+              <span className="font-medium">#E7FE55 &bull; MOOD &amp; PACE</span>
+            </div>
+          </button>
+
+          {/* Card 2: Lavender Pink (#F8D4FE) */}
+          <button
+            type="button"
+            onClick={() =>
+              onSelectStarter(
+                'Can you help me identify a movie? A man keeps reliving the exact same day in a small town.'
+              )
+            }
+            className="md:col-span-5 group rounded-[26px] bg-[#F8D4FE] text-[#000000] p-5 sm:p-6 min-h-[156px] sm:min-h-[168px] flex flex-col justify-between text-left transition-transform duration-200 hover:-translate-y-0.5 shadow-sm border border-black/5"
+          >
+            <div className="w-full flex items-start justify-between gap-4">
+              <div>
+                <span className="text-lg sm:text-xl font-medium tracking-tight block text-black">
+                  Identify a Forgotten Film
+                </span>
+                <p className="text-xs sm:text-sm text-black/75 mt-1 leading-relaxed font-normal">
+                  Trace a half-remembered scene, character clue, or poster image.
+                </p>
+              </div>
+              <ArrowUpRight className="w-6 h-6 text-black shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 stroke-[1.75]" />
+            </div>
+
+            <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/80 pt-4 whitespace-nowrap">
+              <span>Detective Mode :</span>
+              <span className="font-medium">#F8D4FE &bull; CLUE MATCH</span>
+            </div>
+          </button>
         </div>
-        <div className="flex items-start gap-2">
-          <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <span>
-            <strong className="text-stone-300 block">Deductive Detective:</strong> Asks discriminating questions when plot memories are incomplete.
-          </span>
-        </div>
-        <div className="flex items-start gap-2">
-          <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-          <span>
-            <strong className="text-stone-300 block">Privacy By Default:</strong> Memory is strictly off until you opt in. No sensitive tracking.
-          </span>
+
+        {/* Bottom Row: Pearl White (#F2F4FE) + Black (#000000) + White (#FFFFFF) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* Card 3: Pearl White (#F2F4FE) */}
+          <button
+            type="button"
+            onClick={() =>
+              onSelectStarter(
+                'Recommend 3 acclaimed films exploring themes of identity and homecoming across Indian regional or international cinema.'
+              )
+            }
+            className="group rounded-[26px] bg-[#F2F4FE] text-[#000000] p-5 min-h-[148px] sm:min-h-[156px] flex flex-col justify-between text-left transition-transform duration-200 hover:-translate-y-0.5 border border-black/15 dark:border-white/10 shadow-xs"
+          >
+            <div className="w-full flex items-start justify-between gap-3">
+              <div>
+                <span className="text-base sm:text-lg font-medium tracking-tight block text-black">
+                  Indian &amp; World Cinema
+                </span>
+                <p className="text-xs text-black/70 mt-1 leading-relaxed">
+                  Malayalam, Tamil, Hindi, Bengali &amp; global festival gems.
+                </p>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-black shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 stroke-[1.75]" />
+            </div>
+
+            <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/75 pt-4 whitespace-nowrap">
+              <span>Curated Scope :</span>
+              <span className="font-medium">#F2F4FE</span>
+            </div>
+          </button>
+
+          {/* Card 4: Black (#000000) */}
+          <button
+            type="button"
+            onClick={() =>
+              onSelectStarter(
+                'Where can I watch Aavesham or 12th Fail in India right now? Please check verified streaming platforms.'
+              )
+            }
+            className="group rounded-[26px] bg-[#000000] text-[#FFFFFF] p-5 min-h-[148px] sm:min-h-[156px] flex flex-col justify-between text-left transition-transform duration-200 hover:-translate-y-0.5 border border-black/20 dark:border-white/20 shadow-xs"
+          >
+            <div className="w-full flex items-start justify-between gap-3">
+              <div>
+                <span className="text-base sm:text-lg font-medium tracking-tight block text-white">
+                  Where to Watch in India
+                </span>
+                <p className="text-xs text-white/70 mt-1 leading-relaxed">
+                  Verified JioCinema, Hotstar, Prime, Netflix &amp; BookMyShow links.
+                </p>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-white shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 stroke-[1.75]" />
+            </div>
+
+            <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-white/75 pt-4 whitespace-nowrap">
+              <span>Watchmode &amp; OTT :</span>
+              <span className="font-medium">#000000</span>
+            </div>
+          </button>
+
+          {/* Card 5: White (#FFFFFF) */}
+          <button
+            type="button"
+            onClick={() =>
+              onSelectStarter(
+                'Can you tell me about the new Clayface (2026) movie and how its reception looks on TMDB?'
+              )
+            }
+            className="group rounded-[26px] bg-[#FFFFFF] text-[#000000] p-5 min-h-[148px] sm:min-h-[156px] flex flex-col justify-between text-left transition-transform duration-200 hover:-translate-y-0.5 border border-black/10 shadow-xs"
+          >
+            <div className="w-full flex items-start justify-between gap-3">
+              <div>
+                <span className="text-base sm:text-lg font-medium tracking-tight block text-black">
+                  2025–2026 Live Catalog
+                </span>
+                <p className="text-xs text-black/70 mt-1 leading-relaxed">
+                  Real-time TMDB &amp; Watchmode lookup for new and upcoming releases.
+                </p>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-black shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 stroke-[1.75]" />
+            </div>
+
+            <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/75 pt-4 whitespace-nowrap">
+              <span>Live Verification :</span>
+              <span className="font-medium">#FFFFFF</span>
+            </div>
+          </button>
         </div>
       </div>
     </div>
   );
 };
+

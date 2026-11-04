@@ -8,15 +8,11 @@ import { FilmCardData } from '../types';
 import { formatRuntime } from '../utils/filmValidation';
 import {
   Film,
-  Clock,
-  Globe2,
-  Sparkles,
-  ExternalLink,
+  ArrowUpRight,
   Volume2,
   VolumeX,
   AlertCircle,
   Tv,
-  CheckCircle,
 } from 'lucide-react';
 
 interface FilmCardProps {
@@ -44,98 +40,91 @@ export const FilmCard: React.FC<FilmCardProps> = ({
   const bookMyShowUrl = `https://in.bookmyshow.com/search?q=${encodeURIComponent(film.title)}`;
   const indiaOttSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(`${film.title} ${film.release_year || ''} movie watch online india ott`)}`;
 
+  // Assemble clean unboxed metadata items
+  const metaParts: string[] = [];
+  if (film.runtime_minutes && film.runtime_minutes > 0) {
+    metaParts.push(formatRuntime(film.runtime_minutes));
+  }
+  if (film.original_language || film.origin_country) {
+    metaParts.push([film.original_language, film.origin_country].filter(Boolean).join(' / '));
+  }
+  if (film.genres && film.genres.length > 0) {
+    metaParts.push(film.genres.slice(0, 3).join(', '));
+  }
+  if (film.confidence_note) {
+    metaParts.push(film.confidence_note);
+  }
+
   return (
-    <div className="group relative rounded-xl bg-[#141518] border border-white/10 hover:border-amber-500/40 transition-all duration-200 overflow-hidden shadow-lg shadow-black/50 flex flex-col md:flex-row">
+    <div className="group relative rounded-[24px] bg-[#F2F4FE] dark:bg-[#131418] border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-[#E7FE55]/50 transition-all duration-200 overflow-hidden flex flex-col md:flex-row">
       {/* Poster Image / Fallback Container */}
-      <div className="relative w-full md:w-44 h-56 md:h-auto shrink-0 bg-[#0d0e10] overflow-hidden flex items-center justify-center border-b md:border-b-0 md:border-r border-white/5">
+      <div className="relative w-full md:w-44 h-56 md:h-auto shrink-0 bg-black overflow-hidden flex items-center justify-center border-b md:border-b-0 md:border-r border-black/10 dark:border-white/10">
         {film.poster_url && !imageFailed ? (
           <img
             src={film.poster_url}
             alt={`Official poster for ${film.title}`}
+            referrerPolicy="no-referrer"
             onError={() => setImageFailed(true)}
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
         ) : (
-          <div className="p-4 text-center flex flex-col items-center justify-center h-full">
-            <Film className="w-8 h-8 text-amber-500/50 mb-2" />
-            <span className="text-xs font-serif font-semibold text-stone-300 line-clamp-2 px-2">
+          <div className="p-4 text-center flex flex-col items-center justify-center h-full bg-[#141519] text-white">
+            <div className="w-10 h-10 rounded-full bg-[#E7FE55] text-black flex items-center justify-center mb-2.5">
+              <Film className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-semibold text-white line-clamp-2 px-2">
               {film.title}
             </span>
-            <span className="text-[10px] text-stone-400 mt-1">
-              {film.release_year || 'Classic Cinema'}
+            <span className="text-[10px] font-mono text-neutral-400 mt-1 tabular-nums">
+              {film.release_year || 'Verified Film'}
             </span>
-            <span className="text-[9px] uppercase tracking-wider text-amber-400/80 mt-2 bg-amber-500/10 px-2 py-0.5 rounded">
-              Verified Title
-            </span>
-          </div>
-        )}
-
-        {/* Confidence or Era Badge */}
-        {film.confidence_note && (
-          <div className="absolute top-2 left-2 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-amber-300 border border-amber-500/30">
-            {film.confidence_note}
           </div>
         )}
       </div>
 
       {/* Film Content Details */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+      <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          {/* Header row: Title, Year, Runtime, Language */}
-          <div className="flex items-start justify-between gap-3 mb-2">
+          {/* Header row: Title, Year, Clean Unboxed Metadata */}
+          <div className="flex items-start justify-between gap-3 mb-2.5">
             <div>
               <div className="flex items-baseline gap-2 flex-wrap">
-                <h3 className="text-base sm:text-lg font-serif font-bold text-white tracking-tight">
+                <h3 className="text-lg font-semibold text-black dark:text-white tracking-tight">
                   {film.title}
                 </h3>
                 {film.release_year && (
-                  <span className="text-xs font-mono text-stone-400">
+                  <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400 tabular-nums">
                     ({film.release_year})
                   </span>
                 )}
               </div>
 
-              {/* Badges: Runtime, Country/Language */}
-              <div className="flex items-center gap-2.5 mt-1.5 flex-wrap text-xs text-stone-400">
-                {film.runtime_minutes && film.runtime_minutes > 0 ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-mono bg-white/5 px-2 py-0.5 rounded text-stone-300 border border-white/5">
-                    <Clock className="w-3 h-3 text-amber-400" />
-                    {formatRuntime(film.runtime_minutes)}
-                  </span>
-                ) : null}
-
-                {(film.original_language || film.origin_country) && (
-                  <span className="inline-flex items-center gap-1 text-[11px] bg-white/5 px-2 py-0.5 rounded text-stone-300 border border-white/5">
-                    <Globe2 className="w-3 h-3 text-stone-400" />
-                    {[film.original_language, film.origin_country].filter(Boolean).join(' • ')}
-                  </span>
-                )}
-
-                {/* Genre chips */}
-                {film.genres && film.genres.length > 0 && (
-                  <div className="flex items-center gap-1 flex-wrap">
-                    {film.genres.slice(0, 3).map((genre) => (
-                      <span
-                        key={genre}
-                        className="text-[10px] font-mono uppercase bg-amber-500/10 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/20"
-                      >
-                        {genre}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {/* Unboxed Metadata Line with · separators */}
+              {metaParts.length > 0 && (
+                <div className="flex items-center gap-2 mt-1 flex-wrap text-xs font-mono text-neutral-600 dark:text-neutral-400">
+                  {metaParts.map((part, idx) => (
+                    <React.Fragment key={idx}>
+                      <span>{part}</span>
+                      {idx < metaParts.length - 1 && (
+                        <span aria-hidden="true" className="text-neutral-400 dark:text-neutral-600">
+                          &middot;
+                        </span>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Audio Listen Button */}
             {onPlayTTS && (
               <button
                 onClick={handleListenClick}
-                className={`p-2 rounded-lg border transition-all ${
+                className={`p-2 rounded-full border transition-all shrink-0 ${
                   isPlayingAudio
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 animate-pulse'
-                    : 'bg-white/5 border-white/10 text-stone-400 hover:text-amber-300 hover:bg-white/10'
+                    ? 'bg-[#E7FE55] border-black/20 text-black'
+                    : 'bg-white dark:bg-white/5 border-black/10 dark:border-white/10 text-neutral-700 dark:text-neutral-300 hover:bg-[#E7FE55] hover:text-black dark:hover:bg-[#E7FE55] dark:hover:text-black'
                 }`}
                 title={isPlayingAudio ? 'Playing recommendation audio' : 'Listen to film match readout'}
                 aria-label={`Listen to match description for ${film.title}`}
@@ -151,96 +140,97 @@ export const FilmCard: React.FC<FilmCardProps> = ({
 
           {/* Synopsis */}
           {film.short_synopsis && (
-            <p className="text-xs text-stone-300 leading-relaxed mb-3 line-clamp-3">
+            <p className="text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed mb-3.5 line-clamp-3">
               {film.short_synopsis}
             </p>
           )}
 
-          {/* Match Reason Quote Box */}
+          {/* Match Reason Box (No thick left border; clean Lavender/Surface tint) */}
           {film.match_reason && (
-            <div className="mb-3.5 p-2.5 rounded-lg bg-amber-500/5 border-l-2 border-amber-500 text-xs text-stone-300 leading-relaxed flex items-start gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-amber-300 font-medium mr-1">Why it fits:</strong>
-                {film.match_reason}
-              </span>
+            <div className="mb-3.5 p-3 rounded-2xl bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs text-neutral-800 dark:text-neutral-200 leading-relaxed">
+              <strong className="text-black dark:text-[#E7FE55] font-semibold mr-1.5">
+                Why it fits:
+              </strong>
+              <span>{film.match_reason}</span>
             </div>
           )}
 
-          {/* Ratings with verifiable scale */}
+          {/* Ratings with verifiable scale & tabular numerals */}
           {film.ratings && film.ratings.length > 0 && (
-            <div className="flex items-center gap-3 mb-3 text-xs">
+            <div className="flex items-center gap-3 mb-3 text-xs font-mono tabular-nums flex-wrap">
               {film.ratings.map((r, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-1.5 text-stone-300 bg-white/5 px-2.5 py-1 rounded-md border border-white/5"
-                >
-                  <span className="text-[11px] text-stone-400">{r.source}:</span>
-                  <span className="font-mono font-bold text-amber-300">{r.value}</span>
-                  <span className="text-[10px] text-stone-500">/{r.scale}</span>
-                </div>
+                <React.Fragment key={i}>
+                  <div className="flex items-center gap-1.5 text-neutral-800 dark:text-neutral-200">
+                    <span className="text-neutral-500 dark:text-neutral-400">{r.source}:</span>
+                    <span className="font-bold text-black dark:text-[#E7FE55]">{r.value}</span>
+                    <span className="text-neutral-400 dark:text-neutral-500">/{r.scale}</span>
+                  </div>
+                  {i < film.ratings!.length - 1 && (
+                    <span aria-hidden="true" className="text-neutral-400 dark:text-neutral-600">
+                      &middot;
+                    </span>
+                  )}
+                </React.Fragment>
               ))}
             </div>
           )}
         </div>
 
         {/* Footer: Where to watch & navigation links */}
-        <div className="pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+        <div className="pt-3 border-t border-black/10 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
           {/* Availability details */}
           <div>
             {hasWatchData ? (
-              <div className="flex items-center gap-1.5 text-stone-300">
-                <Tv className="w-3.5 h-3.5 text-amber-400" />
-                <span className="font-medium text-stone-200">Watch on:</span>
-                <span className="text-amber-200 font-medium">
+              <div className="flex items-center gap-1.5 text-neutral-800 dark:text-neutral-200">
+                <Tv className="w-3.5 h-3.5 text-black dark:text-[#E7FE55]" />
+                <span className="font-medium">Watch on:</span>
+                <span className="font-semibold text-black dark:text-[#E7FE55]">
                   {film.availability!.map((a) => a.provider).join(', ')}
                 </span>
-                <span className="text-[10px] text-stone-500">
+                <span className="text-[10px] font-mono text-neutral-500">
                   ({film.availability![0].region})
                 </span>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 text-stone-400 text-[11px]">
-                <AlertCircle className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+              <div className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400 text-[11px]">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 <span>Live availability varies by territory. Check official listings:</span>
               </div>
             )}
           </div>
 
-          {/* Sourced links (External navigation only, no transactions) */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Sourced links */}
+          <div className="flex items-center gap-2.5 flex-wrap">
             <a
               href={bookMyShowUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] bg-amber-500/10 text-amber-300 hover:text-amber-200 hover:bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30 font-medium transition-colors"
+              className="inline-flex items-center gap-1 text-[11px] bg-[#E7FE55] text-black hover:opacity-90 px-3 py-1 rounded-full font-semibold transition-opacity whitespace-nowrap shrink-0"
               title="Search BookMyShow for Indian theatrical showtimes in your city"
             >
-              <span>BookMyShow (Theatres)</span>
-              <ExternalLink className="w-2.5 h-2.5" />
+              <span>BookMyShow</span>
+              <ArrowUpRight className="w-3 h-3" />
             </a>
 
             <a
               href={film.availability?.[0]?.source_url || tmdbSearchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] text-stone-300 hover:text-white font-medium transition-colors"
+              className="inline-flex items-center gap-1 text-[11px] bg-[#F8D4FE] text-black hover:opacity-90 px-3 py-1 rounded-full font-medium transition-opacity whitespace-nowrap shrink-0"
             >
               <span>{hasWatchData ? 'OTT Providers' : 'TMDB Watch'}</span>
-              <ExternalLink className="w-2.5 h-2.5" />
+              <ArrowUpRight className="w-3 h-3" />
             </a>
-
-            <span className="text-stone-700 hidden sm:inline">•</span>
 
             <a
               href={indiaOttSearchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] text-stone-400 hover:text-stone-200 transition-colors"
+              className="inline-flex items-center gap-1 text-[11px] text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white underline underline-offset-4 transition-colors whitespace-nowrap shrink-0"
               title="Search OTT streaming options in India"
             >
               <span>Stream in India</span>
-              <ExternalLink className="w-2.5 h-2.5" />
+              <ArrowUpRight className="w-3 h-3" />
             </a>
           </div>
         </div>
@@ -248,3 +238,4 @@ export const FilmCard: React.FC<FilmCardProps> = ({
     </div>
   );
 };
+

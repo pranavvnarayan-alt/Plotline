@@ -154,17 +154,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
-      <div className="bg-[#131518] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+      <div className="bg-white dark:bg-[#0D0E12] border border-black/15 dark:border-white/15 rounded-[28px] w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between bg-[#F2F4FE] dark:bg-[#131418]">
           <div className="flex items-center gap-2.5">
-            <Sliders className="w-5 h-5 text-amber-400" />
-            <h2 className="text-base font-semibold text-white">Settings & Privacy Controls</h2>
+            <div className="w-7 h-7 rounded-full bg-[#E7FE55] text-black flex items-center justify-center">
+              <Sliders className="w-4 h-4" />
+            </div>
+            <h2 className="text-base font-semibold text-black dark:text-white tracking-tight">
+              Settings &amp; Privacy Controls
+            </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-stone-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-full text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
             aria-label="Close settings"
           >
             <X className="w-5 h-5" />
@@ -172,14 +176,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6 text-sm text-stone-300">
+        <div className="p-6 overflow-y-auto space-y-6 text-sm text-neutral-700 dark:text-neutral-300">
           {/* Status Message */}
           {statusMessage && (
             <div
-              className={`p-3 rounded-lg border text-xs flex items-center gap-2 ${
+              className={`p-3 rounded-2xl border text-xs flex items-center gap-2 ${
                 statusMessage.type === 'success'
-                  ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
-                  : 'bg-red-950/40 border-red-500/40 text-red-300'
+                  ? 'bg-[#E7FE55] border-black/15 text-black'
+                  : 'bg-[#F8D4FE] border-black/15 text-black'
               }`}
             >
               {statusMessage.type === 'success' ? (
@@ -187,34 +191,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               ) : (
                 <AlertTriangle className="w-4 h-4 shrink-0" />
               )}
-              <span>{statusMessage.text}</span>
+              <span className="font-medium">{statusMessage.text}</span>
             </div>
           )}
 
           {/* Section 1: Territory & Streaming Region */}
-          <div className="space-y-3 pb-5 border-b border-white/10">
+          <div className="space-y-3 pb-5 border-b border-black/10 dark:border-white/10">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs uppercase font-mono tracking-wider text-amber-400 font-semibold">
-                Territory & Availability Region
+              <h3 className="text-xs font-mono font-semibold text-black dark:text-[#E7FE55]">
+                01. Territory &amp; Availability Region
               </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+              <span className="text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                 Primary: India (IN)
               </span>
             </div>
-            <p className="text-xs text-stone-300 leading-relaxed">
-              Catering towards Indian cinephiles. Verified streaming tracks <strong>JioCinema, Disney+ Hotstar, Prime Video India, Netflix, ZEE5, SonyLIV, Aha, and ManoramaMAX</strong>. Theatrical showtimes link directly to <strong>BookMyShow</strong> across Indian cities.
+            <p className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
+              Configured for Indian cinephiles. Verified streaming tracks <strong>JioCinema, Disney+ Hotstar, Prime Video India, Netflix, ZEE5, SonyLIV, Aha, and ManoramaMAX</strong>. Theatrical showtimes link directly to <strong>BookMyShow</strong> across Indian cities.
             </p>
             <div className="flex items-center gap-3">
-              <label htmlFor="user-region-select" className="text-xs text-stone-300 font-medium">
+              <label htmlFor="user-region-select" className="text-xs text-black dark:text-white font-medium">
                 Country / Region:
               </label>
               <select
                 id="user-region-select"
                 value={userRegion}
                 onChange={(e) => onUserRegionChange(e.target.value)}
-                className="bg-[#1c1f24] border border-white/15 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-amber-500 font-medium"
+                className="bg-[#F2F4FE] dark:bg-[#16181D] border border-black/15 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-[#E7FE55] font-medium"
               >
-                <option value="IN">India (IN) — Default & Primary</option>
+                <option value="IN">India (IN) — Default &amp; Primary</option>
                 <option value="US">United States (US)</option>
                 <option value="GB">United Kingdom (GB)</option>
                 <option value="CA">Canada (CA)</option>
@@ -230,9 +234,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Section 2: Spoilers & Content Preferences */}
-          <div className="space-y-3 pb-5 border-b border-white/10">
-            <h3 className="text-xs uppercase font-mono tracking-wider text-amber-400 font-semibold">
-              Spoiler Sensitivity
+          <div className="space-y-3 pb-5 border-b border-black/10 dark:border-white/10">
+            <h3 className="text-xs font-mono font-semibold text-black dark:text-[#E7FE55]">
+              02. Spoiler Sensitivity
             </h3>
             <div className="space-y-2">
               <label className="flex items-center gap-2.5 cursor-pointer">
@@ -243,9 +247,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   onChange={() =>
                     setPreferences((prev) => ({ ...prev, spoiler_preference: 'avoid_by_default' }))
                   }
-                  className="text-amber-500 focus:ring-0"
+                  className="accent-black dark:accent-[#E7FE55]"
                 />
-                <span className="text-xs text-stone-200">
+                <span className="text-xs text-neutral-800 dark:text-neutral-200">
                   <strong>Avoid spoilers by default (Recommended)</strong> — Summaries are strictly spoiler-free.
                 </span>
               </label>
@@ -257,9 +261,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   onChange={() =>
                     setPreferences((prev) => ({ ...prev, spoiler_preference: 'allow' }))
                   }
-                  className="text-amber-500 focus:ring-0"
+                  className="accent-black dark:accent-[#E7FE55]"
                 />
-                <span className="text-xs text-stone-200">
+                <span className="text-xs text-neutral-800 dark:text-neutral-200">
                   <strong>Allow detailed plot twists</strong> — Plotline may discuss key turns or endings if asked.
                 </span>
               </label>
@@ -267,14 +271,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Section 3: Opt-in Memory & Saved Preferences */}
-          <div className="space-y-4 pb-5 border-b border-white/10">
+          <div className="space-y-4 pb-5 border-b border-black/10 dark:border-white/10">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xs uppercase font-mono tracking-wider text-amber-400 font-semibold flex items-center gap-2">
+                <h3 className="text-xs font-mono font-semibold text-black dark:text-[#E7FE55] flex items-center gap-2">
                   <Database className="w-4 h-4" />
-                  Opt-In Saved Preferences (Memory)
+                  03. Opt-In Saved Preferences (Memory)
                 </h3>
-                <p className="text-xs text-stone-400 mt-0.5">
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-0.5">
                   Strictly off by default. Storing preferences allows Plotline to remember your favorite genres, languages, and runtime ceilings across visits.
                 </p>
               </div>
@@ -289,16 +293,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   }
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-stone-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                <div className="w-11 h-6 bg-neutral-300 dark:bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-black dark:after:bg-white peer-checked:after:bg-black after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#E7FE55]"></div>
               </label>
             </div>
 
             {/* When Memory is enabled, reveal editable fields */}
             {preferences.memory_enabled ? (
-              <div className="p-4 rounded-xl bg-[#181a1d] border border-amber-500/20 space-y-4 animate-fade-in">
+              <div className="p-4 rounded-2xl bg-[#F2F4FE] dark:bg-[#141519] border border-black/10 dark:border-white/15 space-y-4 animate-fade-in">
                 {/* Max Runtime */}
                 <div>
-                  <label htmlFor="pref-runtime" className="text-xs font-medium text-stone-300 block mb-1">
+                  <label htmlFor="pref-runtime" className="text-xs font-medium text-black dark:text-white block mb-1">
                     Usual Max Runtime (Minutes):
                   </label>
                   <input
@@ -306,7 +310,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     type="number"
                     min="30"
                     max="300"
-                    placeholder="e.g. 100"
+                    placeholder="e.g. 120"
                     value={preferences.usual_runtime_max_minutes || ''}
                     onChange={(e) =>
                       setPreferences((prev) => ({
@@ -314,13 +318,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         usual_runtime_max_minutes: e.target.value ? parseInt(e.target.value, 10) : null,
                       }))
                     }
-                    className="w-full sm:w-48 bg-[#101214] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-amber-500"
+                    className="w-full sm:w-48 bg-white dark:bg-[#0D0E11] border border-black/15 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-[#E7FE55]"
                   />
                 </div>
 
                 {/* Preferred Languages */}
                 <div>
-                  <label htmlFor="pref-language" className="text-xs font-medium text-stone-300 block mb-1">
+                  <label htmlFor="pref-language" className="text-xs font-medium text-black dark:text-white block mb-1">
                     Preferred Languages:
                   </label>
                   <div className="flex items-center gap-2 mb-2">
@@ -331,19 +335,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       value={newLanguage}
                       onChange={(e) => setNewLanguage(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addLanguage())}
-                      className="bg-[#101214] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-amber-500 flex-1"
+                      className="bg-white dark:bg-[#0D0E11] border border-black/15 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-[#E7FE55] flex-1"
                     />
                     <button
                       type="button"
                       onClick={addLanguage}
-                      className="px-3 py-1.5 bg-white/10 hover:bg-white/15 text-stone-200 rounded-lg text-xs"
+                      className="px-3.5 py-1.5 bg-black text-white dark:bg-[#E7FE55] dark:text-black font-medium rounded-xl text-xs"
                     >
                       Add
                     </button>
                   </div>
-                  {/* Quick-add Indian language chips */}
+                  {/* Quick-add Indian language buttons */}
                   <div className="flex items-center gap-1.5 flex-wrap mb-2">
-                    <span className="text-[10px] text-stone-400 font-mono">Quick add:</span>
+                    <span className="text-[10px] text-neutral-500 font-mono">Quick add:</span>
                     {['Hindi', 'Malayalam', 'Tamil', 'Telugu', 'Kannada', 'Bengali', 'Gujarati', 'Marathi', 'English'].map((quickLang) => {
                       const alreadyAdded = preferences.preferred_languages.includes(quickLang);
                       return (
@@ -359,10 +363,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             }
                           }}
                           disabled={alreadyAdded}
-                          className={`text-[10px] px-2 py-0.5 rounded transition-colors ${
+                          className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
                             alreadyAdded
-                              ? 'bg-white/5 text-stone-500 cursor-default'
-                              : 'bg-white/10 text-stone-300 hover:bg-amber-500/20 hover:text-amber-300'
+                              ? 'bg-black/5 dark:bg-white/5 text-neutral-400 cursor-default'
+                              : 'bg-white dark:bg-white/10 text-black dark:text-white border border-black/10 dark:border-white/10 hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] dark:hover:text-black'
                           }`}
                         >
                           + {quickLang}
@@ -374,13 +378,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     {preferences.preferred_languages.map((lang) => (
                       <span
                         key={lang}
-                        className="inline-flex items-center gap-1 text-xs bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/20"
+                        className="inline-flex items-center gap-1 text-xs bg-[#E7FE55] text-black font-medium px-2.5 py-0.5 rounded-full"
                       >
                         {lang}
                         <button
                           type="button"
                           onClick={() => removeLanguage(lang)}
-                          className="hover:text-white"
+                          className="hover:opacity-70"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -391,7 +395,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                 {/* Preferred Genres */}
                 <div>
-                  <label htmlFor="pref-genre" className="text-xs font-medium text-stone-300 block mb-1">
+                  <label htmlFor="pref-genre" className="text-xs font-medium text-black dark:text-white block mb-1">
                     Preferred Genres / Formats:
                   </label>
                   <div className="flex items-center gap-2 mb-2">
@@ -402,12 +406,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       value={newGenre}
                       onChange={(e) => setNewGenre(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addGenre())}
-                      className="bg-[#101214] border border-white/10 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-amber-500 flex-1"
+                      className="bg-white dark:bg-[#0D0E11] border border-black/15 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-[#E7FE55] flex-1"
                     />
                     <button
                       type="button"
                       onClick={addGenre}
-                      className="px-3 py-1.5 bg-white/10 hover:bg-white/15 text-stone-200 rounded-lg text-xs"
+                      className="px-3.5 py-1.5 bg-black text-white dark:bg-[#E7FE55] dark:text-black font-medium rounded-xl text-xs"
                     >
                       Add
                     </button>
@@ -416,13 +420,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     {preferences.preferred_genres.map((genre) => (
                       <span
                         key={genre}
-                        className="inline-flex items-center gap-1 text-xs bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/20"
+                        className="inline-flex items-center gap-1 text-xs bg-[#F8D4FE] text-black font-medium px-2.5 py-0.5 rounded-full"
                       >
                         {genre}
                         <button
                           type="button"
                           onClick={() => removeGenre(genre)}
-                          className="hover:text-white"
+                          className="hover:opacity-70"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -432,11 +436,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                <div className="flex items-center justify-between pt-2 border-t border-black/10 dark:border-white/10">
                   <button
                     onClick={handleSavePreferences}
                     disabled={isLoading}
-                    className="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                    className="px-4 py-1.5 rounded-full bg-[#E7FE55] hover:opacity-90 text-black font-semibold text-xs flex items-center gap-1.5 transition-opacity"
                   >
                     <Save className="w-3.5 h-3.5" />
                     <span>Save Preferences</span>
@@ -445,182 +449,41 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     onClick={handleDeleteAllPreferences}
                     disabled={isLoading}
-                    className="px-3 py-1.5 rounded-lg text-stone-400 hover:text-red-300 hover:bg-red-950/30 text-xs flex items-center gap-1 transition-all border border-transparent hover:border-red-900/40"
+                    className="px-3 py-1.5 rounded-full text-neutral-600 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 text-xs flex items-center gap-1 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>Delete All Saved Data</span>
+                    <span>Delete Saved Data</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="p-3 rounded-lg bg-white/5 text-stone-400 text-xs flex items-center gap-2">
-                <Lock className="w-4 h-4 text-stone-500 shrink-0" />
+              <div className="p-3 rounded-2xl bg-[#F2F4FE] dark:bg-white/5 text-neutral-600 dark:text-neutral-400 text-xs flex items-center gap-2">
+                <Lock className="w-4 h-4 shrink-0" />
                 <span>Memory is disabled. Plotline only tracks the ongoing active conversation in this browser session.</span>
               </div>
             )}
           </div>
 
-          {/* Section 4: Extending Access for Films After January 2025 */}
-          <div className="space-y-3 pb-5 border-b border-white/10">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs uppercase font-mono tracking-wider text-amber-400 font-semibold flex items-center gap-1.5">
-                <Database className="w-4 h-4" />
-                Live Access & Films After January 2025
-              </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-stone-300">
-                TMDB Live Catalog
-              </span>
-            </div>
-            <p className="text-xs text-stone-300 leading-relaxed">
-              To discover films released after January 2025 with real-time metadata, posters, runtimes, and local streaming providers, connect <strong>The Movie Database (TMDB)</strong>:
-            </p>
-
-            <div className="p-3.5 rounded-xl bg-[#17191d] border border-white/10 space-y-2.5 text-xs">
-              <div className="font-semibold text-stone-200">How to extend access:</div>
-              <ol className="list-decimal list-inside space-y-1.5 text-stone-300">
-                <li>
-                  Create a free developer account at{' '}
-                  <a
-                    href="https://www.themoviedb.org/settings/api"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-amber-400 underline hover:text-amber-300"
-                  >
-                    themoviedb.org/settings/api
-                  </a>{' '}
-                  and generate an API Key.
-                </li>
-                <li>
-                  In <strong>Google AI Studio</strong>, open the <strong>Secrets</strong> panel (Settings &gt; Secrets).
-                </li>
-                <li>
-                  Add a secret named <code className="text-amber-300 bg-black/40 px-1 py-0.5 rounded font-mono">TMDB_API_KEY</code> with your key value.
-                </li>
-                <li>
-                  Restart or refresh the applet. Plotline will automatically query the live TMDB database for all 2025, 2026, and upcoming worldwide releases!
-                </li>
-              </ol>
-            </div>
-          </div>
-
-          {/* Section 5: Reverse Image Search & Google Lens Access */}
-          <div className="space-y-3 pb-5 border-b border-white/10">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs uppercase font-mono tracking-wider text-amber-400 font-semibold flex items-center gap-1.5">
-                <Globe className="w-4 h-4" />
-                Reverse Image Search & Google Lens
-              </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                Visual Web Search
-              </span>
-            </div>
-            <p className="text-xs text-stone-300 leading-relaxed">
-              Plotline supports two ways to perform reverse image search on uploaded movie stills, scenes, and posters:
-            </p>
-
-            <div className="p-3.5 rounded-xl bg-[#17191d] border border-white/10 space-y-3 text-xs">
-              <div className="space-y-1">
-                <div className="font-semibold text-stone-200 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                  Method 1: Direct 1-Click Google Lens (Instant & No Token Required)
-                </div>
-                <p className="text-stone-300 text-[11px] pl-3.5">
-                  Whenever you upload an image clue in the chat, click the <strong className="text-amber-300">"Search Google Lens"</strong> button on your message card. It immediately opens Google Lens in a new tab where you can inspect web matches.
-                </p>
-              </div>
-
-              <div className="space-y-1.5 pt-2 border-t border-white/5">
-                <div className="font-semibold text-stone-200 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                  Method 2: Automated Background Search via Apify Google Lens Actor
-                </div>
-                <p className="text-stone-300 text-[11px] pl-3.5">
-                  To have the server automatically scrape Google Lens web matches and inject the visual clues directly into the Gemini model prompt:
-                </p>
-                <ol className="list-decimal list-inside space-y-1 text-stone-300 text-[11px] pl-3.5">
-                  <li>
-                    Get an API token from your Apify console at{' '}
-                    <a
-                      href="https://console.apify.com/account/integrations"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-amber-400 underline hover:text-amber-300"
-                    >
-                      console.apify.com
-                    </a>.
-                  </li>
-                  <li>
-                    In <strong>Google AI Studio</strong>, open <strong>Settings &gt; Secrets</strong>.
-                  </li>
-                  <li>
-                    Add a secret named <code className="text-amber-300 bg-black/40 px-1 py-0.5 rounded font-mono">APIFY_API_TOKEN</code> with your Apify token.
-                  </li>
-                  <li className="text-amber-200/90 font-medium">
-                    ⚠️ <em>Important:</em> Do <strong>NOT</strong> put your Apify token into <code className="text-stone-300 bg-black/40 px-1 py-0.5 rounded font-mono">GEMINI_API_KEY</code>. <code className="text-stone-300 bg-black/40 px-1 py-0.5 rounded font-mono">GEMINI_API_KEY</code> is exclusively for the Google Gemini vision model.
-                  </li>
-                </ol>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 6: OpenRouter & Vercel Deployment */}
-          <div className="space-y-3 pb-5 border-b border-white/10">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs uppercase font-mono tracking-wider text-amber-400 font-semibold flex items-center gap-1.5">
-                <Globe className="w-4 h-4" />
-                Vercel & OpenRouter Deployment
-              </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                Multi-Provider Adapter
-              </span>
-            </div>
-            <p className="text-xs text-stone-300 leading-relaxed">
-              Pushing code to GitHub and deploying to <strong>Vercel</strong>? Plotline has a built-in OpenRouter adapter:
-            </p>
-
-            <div className="p-3.5 rounded-xl bg-[#17191d] border border-white/10 space-y-2 text-xs">
-              <div className="font-semibold text-stone-200">How to configure on Vercel:</div>
-              <ul className="space-y-1.5 text-stone-300 list-disc list-inside">
-                <li>
-                  In your Vercel Project Settings under <strong>Environment Variables</strong>, add either:
-                  <div className="ml-4 mt-1 font-mono text-[11px] space-y-0.5">
-                    <div><span className="text-amber-300">OPENROUTER_API_KEY</span> = <span className="text-stone-400">sk-or-v1-...</span></div>
-                    <span className="text-stone-400 text-[10px]">or simply put your <code className="text-amber-200">sk-or-...</code> key in <span className="text-amber-300">GEMINI_API_KEY</span> (auto-detected!)</span>
-                  </div>
-                </li>
-                <li>
-                  <strong className="text-stone-200">Model selection:</strong> Defaults to <code className="text-amber-300 font-mono">google/gemini-3.8-flash</code> (with automatic fallback to <code className="text-amber-300 font-mono">google/gemini-3.1-flash-lite</code>).
-                </li>
-                <li>
-                  <strong className="text-stone-200">Zero-config Vercel Serverless:</strong> <code className="text-stone-200 font-mono">vercel.json</code> and <code className="text-stone-200 font-mono">api/index.ts</code> are already generated and ready for instant deployment.
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Section 7: Privacy & Attribution Notice */}
-          <div className="space-y-2 text-xs text-stone-400">
-            <h3 className="uppercase font-mono tracking-wider text-stone-400 font-semibold flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-amber-400" />
-              Privacy & Sources Declaration
+          {/* Section 4: Privacy & Sources Declaration */}
+          <div className="space-y-2 text-xs text-neutral-600 dark:text-neutral-400">
+            <h3 className="font-mono font-semibold text-black dark:text-white flex items-center gap-1.5">
+              <Shield className="w-4 h-4 text-black dark:text-[#E7FE55]" />
+              04. Privacy &amp; Sources Declaration
             </h3>
             <p>
-              • <strong>Attribution:</strong> Film metadata and poster assets are provided by The Movie Database (TMDB). This product uses the TMDB API but is not endorsed or certified by TMDB.
+              &bull; <strong>Attribution:</strong> Film metadata, reviews, and streaming availability are provided live by The Movie Database (TMDB) and Watchmode APIs.
             </p>
             <p>
-              • <strong>Conversational Model:</strong> Powered by Google Gemini 3.8 Flash via server-side API calls. User conversations and uploads are never stored permanently or used for public training.
-            </p>
-            <p>
-              • <strong>Audio Safety:</strong> Raw microphone audio is processed locally for dictation and is never retained on the server.
+              &bull; <strong>Conversational Model:</strong> Powered by Google Gemini via server-side API calls. User conversations and uploads are never stored permanently.
             </p>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3 bg-[#0e1012] border-t border-white/10 flex justify-end">
+        <div className="px-6 py-3.5 bg-[#F2F4FE] dark:bg-[#131418] border-t border-black/10 dark:border-white/10 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-medium transition-colors"
+            className="px-5 py-1.5 rounded-full bg-black text-white dark:bg-[#E7FE55] dark:text-black text-xs font-semibold transition-opacity hover:opacity-90"
           >
             Done
           </button>
@@ -629,3 +492,4 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     </div>
   );
 };
+

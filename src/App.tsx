@@ -8,6 +8,7 @@ import { Message, PersonaStyle, FilmCardData } from './types';
 import { Header } from './components/Header';
 import { WelcomeState } from './components/WelcomeState';
 import { ChatMessage } from './components/ChatMessage';
+import { PlotlineLogo } from './components/PlotlineLogo';
 import { Composer } from './components/Composer';
 import { SettingsModal } from './components/SettingsModal';
 import { DevTestModal } from './components/DevTestModal';
@@ -23,6 +24,33 @@ export default function App() {
     text: string;
     image?: { mimeType: string; base64Data: string; previewUrl: string };
   } | null>(null);
+
+  // Theme state (Dark mode default to match Style Guide, with full Light mode toggle)
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = window.localStorage.getItem('plotline-theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+    }
+    return 'dark';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    try {
+      window.localStorage.setItem('plotline-theme', theme);
+    } catch {
+      // Ignore storage errors in restricted contexts
+    }
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Audio Playback state
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
@@ -112,7 +140,7 @@ export default function App() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         films: data.films || [],
         is_clarification: data.isClarification,
-        source_note: 'Verified with TMDB metadata & Gemini 3.8. Live showtimes/prices not simulated.',
+        source_note: 'Verified with TMDB & Watchmode metadata. Live showtimes/prices not simulated.',
         reverse_search_engine: data.reverseSearchEngine,
         reverse_search_matches: data.reverseSearchMatches,
       };
@@ -148,15 +176,13 @@ export default function App() {
   };
 
   const handleClearChat = () => {
-    if (window.confirm('Clear current session conversation? (This resets conversation context for future answers)')) {
-      setMessages([]);
-      setErrorMessage(null);
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-        currentAudioRef.current = null;
-      }
-      setPlayingAudioId(null);
+    setMessages([]);
+    setErrorMessage(null);
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
     }
+    setPlayingAudioId(null);
   };
 
   // Text-To-Speech handler
@@ -172,7 +198,6 @@ export default function App() {
     try {
       setPlayingAudioId('loading');
 
-      // Request server-side TTS using gemini-3.8-flash-lite-tts
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -220,7 +245,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0d0e] text-[#e5e5e7] flex flex-col justify-between selection:bg-amber-500/30 selection:text-amber-200">
+    <div className="min-h-screen bg-[#F2F4FE] text-[#000000] dark:bg-[#000000] dark:text-[#FFFFFF] flex flex-col justify-between selection:bg-[#E7FE55] selection:text-[#000000] transition-colors duration-200">
       {/* Top Header */}
       <Header
         activePersona={activePersona}
@@ -229,14 +254,20 @@ export default function App() {
         onOpenDevTest={() => setIsDevTestOpen(true)}
         onClearChat={handleClearChat}
         messageCount={messages.length}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main Conversation Container */}
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-6 flex flex-col justify-start">
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 flex flex-col justify-start">
         {messages.length === 0 ? (
-          <WelcomeState onSelectStarter={(prompt) => handleSendMessage(prompt)} />
+          <WelcomeState
+            onSelectStarter={(prompt) => handleSendMessage(prompt)}
+            activePersona={activePersona}
+            onPersonaChange={setActivePersona}
+          />
         ) : (
-          <div className="space-y-4 pb-6">
+          <div className="space-y-5 pb-6">
             {messages.map((message) => (
               <ChatMessage
                 key={message.id}
@@ -248,27 +279,27 @@ export default function App() {
 
             {/* Loading Indicator */}
             {isLoading && (
-              <div className="my-4 animate-fade-in flex items-center gap-3 text-stone-400 text-xs font-mono">
-                <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+              <div className="my-4 animate-fade-in flex items-center gap-3 text-neutral-600 dark:text-neutral-400 text-xs font-mono">
+                <div className="w-8 h-8 rounded-xl bg-[#000000] dark:bg-[#E7FE55] text-[#E7FE55] dark:text-[#000000] flex items-center justify-center shadow-sm">
+                  <PlotlineLogo className="w-4 h-4 animate-pulse" />
                 </div>
                 <span>
-                  Consulting cinematic knowledge & checking verified candidate records...
+                  Consulting live TMDB &amp; Watchmode catalog records...
                 </span>
               </div>
             )}
 
             {/* Error Message with Retry */}
             {errorMessage && (
-              <div className="p-4 rounded-xl bg-red-950/40 border border-red-500/40 text-red-200 text-xs flex items-center justify-between gap-3 animate-fade-in my-3">
+              <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-500/40 text-red-900 dark:text-red-200 text-xs flex items-center justify-between gap-3 animate-fade-in my-3">
                 <div className="flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
                 {lastUserPrompt && (
                   <button
                     onClick={handleRetryLastMessage}
-                    className="px-3 py-1 bg-red-900/50 hover:bg-red-900 text-red-100 rounded-lg font-medium flex items-center gap-1 shrink-0 transition-colors"
+                    className="px-3.5 py-1.5 bg-black text-white dark:bg-[#E7FE55] dark:text-black rounded-xl font-medium flex items-center gap-1.5 shrink-0 transition-colors"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Retry</span>

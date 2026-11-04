@@ -208,21 +208,21 @@ export const Composer: React.FC<ComposerProps> = ({
   };
 
   return (
-    <div className="sticky bottom-0 z-20 w-full bg-[#0c0d0e]/95 backdrop-blur-md border-t border-white/10 px-4 py-3 pb-5">
-      <div className="max-w-3xl mx-auto">
+    <div className="sticky bottom-0 z-20 w-full bg-[#F2F4FE]/95 dark:bg-[#000000]/95 backdrop-blur-md border-t border-black/10 dark:border-white/10 px-4 py-3 pb-4 transition-colors duration-200">
+      <div className="max-w-4xl mx-auto">
         {/* Validation or Voice Status Banner */}
         {(imageError || voiceNotice) && (
-          <div className="mb-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs text-amber-200 animate-fade-in">
+          <div className="mb-2.5 p-2.5 rounded-2xl bg-[#F8D4FE] text-black flex items-center justify-between text-xs animate-fade-in">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>{imageError || voiceNotice}</span>
+              <AlertCircle className="w-4 h-4 text-black shrink-0" />
+              <span className="font-medium">{imageError || voiceNotice}</span>
             </div>
             <button
               onClick={() => {
                 setImageError(null);
                 setVoiceNotice(null);
               }}
-              className="p-1 hover:text-white"
+              className="p-1 hover:bg-black/10 rounded-full"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -231,22 +231,22 @@ export const Composer: React.FC<ComposerProps> = ({
 
         {/* Attached image preview */}
         {attachedImage && (
-          <div className="mb-2.5 flex items-center gap-2.5 p-2 rounded-lg bg-[#181a1d] border border-white/10 w-fit">
+          <div className="mb-2.5 flex items-center gap-2.5 p-2 rounded-2xl bg-white dark:bg-[#141519] border border-black/10 dark:border-white/15 w-fit">
             <img
               src={attachedImage.previewUrl}
               alt="Attached preview"
-              className="w-12 h-12 object-cover rounded border border-white/10"
+              className="w-12 h-12 object-cover rounded-xl border border-black/10 dark:border-white/10"
             />
             <div className="text-xs">
-              <p className="text-stone-200 font-medium truncate max-w-xs">{attachedImage.fileName}</p>
-              <span className="text-[10px] text-amber-400/90 font-mono uppercase">
+              <p className="text-black dark:text-white font-medium truncate max-w-xs">{attachedImage.fileName}</p>
+              <span className="text-[10px] text-neutral-600 dark:text-[#E7FE55] font-mono">
                 Ready to analyze for clues
               </span>
             </div>
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="p-1 hover:bg-white/10 rounded-full text-stone-400 hover:text-stone-200 transition-colors ml-2"
+              className="p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded-full text-neutral-500 hover:text-black dark:hover:text-white transition-colors ml-2"
               title="Remove image"
               aria-label="Remove image"
             >
@@ -256,7 +256,10 @@ export const Composer: React.FC<ComposerProps> = ({
         )}
 
         {/* Composer Form */}
-        <form onSubmit={handleSubmit} className="relative flex items-end gap-2 bg-[#16181b] rounded-2xl border border-white/15 focus-within:border-amber-500/50 p-2 shadow-xl transition-all">
+        <form
+          onSubmit={handleSubmit}
+          className="relative flex items-end gap-2 bg-white dark:bg-[#121316] rounded-full border border-black/15 dark:border-white/15 focus-within:border-black dark:focus-within:border-[#E7FE55] px-3 py-2 shadow-sm transition-all"
+        >
           {/* Hidden File Input */}
           <input
             ref={fileInputRef}
@@ -272,7 +275,7 @@ export const Composer: React.FC<ComposerProps> = ({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
-            className="p-2 text-stone-400 hover:text-stone-200 hover:bg-white/5 rounded-xl transition-colors shrink-0 disabled:opacity-40"
+            className="p-2 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors shrink-0 disabled:opacity-40"
             title="Attach a poster, scene screenshot, or clue image (JPEG, PNG, WebP up to 5MB)"
             aria-label="Attach poster or scene image"
           >
@@ -284,10 +287,10 @@ export const Composer: React.FC<ComposerProps> = ({
             type="button"
             onClick={toggleVoiceRecording}
             disabled={isLoading}
-            className={`p-2 rounded-xl transition-all shrink-0 ${
+            className={`p-2 rounded-full transition-all shrink-0 ${
               isListening
-                ? 'bg-amber-500 text-black animate-pulse'
-                : 'text-stone-400 hover:text-stone-200 hover:bg-white/5 disabled:opacity-40'
+                ? 'bg-[#F8D4FE] text-black'
+                : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-40'
             }`}
             title={isListening ? 'Stop listening' : 'Voice input (Dictate plot memories or movie request)'}
             aria-label={isListening ? 'Stop microphone' : 'Start microphone dictation'}
@@ -304,30 +307,30 @@ export const Composer: React.FC<ComposerProps> = ({
             placeholder={
               isListening
                 ? 'Listening to your voice...'
-                : 'Describe a mood, remembered scene, or ask where to watch...'
+                : 'Ask about any film or scene...'
             }
             rows={1}
             disabled={isLoading}
-            className="w-full bg-transparent border-0 text-sm text-stone-100 placeholder-stone-500 focus:ring-0 focus:outline-none resize-none py-2 px-1 max-h-40 leading-relaxed"
+            className="w-full bg-transparent border-0 text-sm text-black dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:ring-0 focus:outline-none resize-none py-2 px-1 max-h-40 leading-normal overflow-hidden"
           />
 
           {/* Action buttons: Send / Loading / Cancel */}
-          <div className="flex items-center gap-1 shrink-0 pb-0.5">
+          <div className="flex items-center gap-1 shrink-0">
             {isLoading ? (
               <button
                 type="button"
                 onClick={onCancelRequest}
-                className="p-2 rounded-xl bg-stone-800 text-stone-300 hover:text-white transition-colors flex items-center justify-center"
+                className="p-2.5 rounded-full bg-black text-white dark:bg-white dark:text-black transition-colors flex items-center justify-center"
                 title="Cancel request"
                 aria-label="Cancel model request"
               >
-                <Loader2 className="w-5 h-5 animate-spin text-amber-400" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               </button>
             ) : (
               <button
                 type="submit"
                 disabled={!text.trim() && !attachedImage}
-                className="p-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white disabled:opacity-30 disabled:hover:bg-amber-600 transition-all shadow-md shadow-amber-950/40"
+                className="p-2.5 rounded-full bg-[#E7FE55] hover:opacity-90 text-black disabled:opacity-35 transition-all font-semibold"
                 title="Send message (Enter)"
                 aria-label="Send message"
               >
@@ -338,11 +341,12 @@ export const Composer: React.FC<ComposerProps> = ({
         </form>
 
         {/* Footer Guidance Note */}
-        <div className="mt-2 flex items-center justify-between text-[11px] text-stone-400 px-2 font-mono">
-          <span>Enter to send • Shift + Enter for newline</span>
-          <span className="hidden sm:inline">Untrusted media sanitized • No live showtime fabrication</span>
+        <div className="mt-2 flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400 px-3 font-mono">
+          <span>Enter to send &middot; Shift + Enter for newline</span>
+          <span className="hidden sm:inline">Live TMDB &amp; Watchmode verified</span>
         </div>
       </div>
     </div>
   );
 };
+

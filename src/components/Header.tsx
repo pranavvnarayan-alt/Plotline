@@ -4,8 +4,9 @@
  */
 
 import React from 'react';
-import { Film, Sliders, ShieldCheck, Trash2, Sparkles, Compass, Search } from 'lucide-react';
+import { Sliders, ShieldCheck, Trash2, Sun, Moon } from 'lucide-react';
 import { PersonaStyle } from '../types';
+import { PlotlineLogo } from './PlotlineLogo';
 
 interface HeaderProps {
   activePersona: PersonaStyle;
@@ -14,6 +15,8 @@ interface HeaderProps {
   onOpenDevTest: () => void;
   onClearChat: () => void;
   messageCount: number;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,86 +26,65 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenDevTest,
   onClearChat,
   messageCount,
+  theme,
+  onToggleTheme,
 }) => {
   return (
-    <header className="sticky top-0 z-30 w-full bg-[#0c0d0e]/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
-      <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-        {/* Brand identity */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-600 to-amber-700 flex items-center justify-center text-white shadow-md shadow-amber-950/40 border border-amber-400/30">
-            <Film className="w-5 h-5 text-amber-100" />
+    <header className="sticky top-0 z-30 w-full bg-[#F2F4FE]/90 dark:bg-[#000000]/90 backdrop-blur-md border-b border-black/10 dark:border-white/10 px-4 sm:px-6 py-3.5 transition-colors duration-200">
+      <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+        {/* Zone 1: Brand identity with the Plotline P-film-strip logo */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#000000] dark:bg-[#E7FE55] text-[#E7FE55] dark:text-[#000000] flex items-center justify-center border border-black/15 dark:border-white/15 shadow-xs transition-colors">
+            <PlotlineLogo className="w-5 h-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-ticket text-sm font-semibold tracking-widest text-amber-400 uppercase">
-                PLOTLINE
-              </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-white/10 text-stone-300">
-                Beta
-              </span>
-            </div>
-            <p className="text-xs text-stone-400 hidden sm:block">
-              Conversational movie discovery companion
-            </p>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold tracking-tight leading-none text-black dark:text-white whitespace-nowrap">
+              Plotline
+            </span>
+            <span className="text-[9px] font-sans font-medium uppercase tracking-widest text-neutral-500 dark:text-[#F8D4FE] mt-0.5">
+              Cinema Companion
+            </span>
           </div>
         </div>
 
-        {/* Persona Selector (Presentation only, per system prompt rules) */}
+        {/* Zone 2: Persona Selector */}
         <div
           role="radiogroup"
           aria-label="Agent persona style"
-          className="hidden md:flex items-center bg-[#181a1c] p-1 rounded-lg border border-white/10 text-xs"
+          className="hidden md:flex items-center bg-white dark:bg-[#111215] p-1 rounded-full border border-black/10 dark:border-white/10 text-xs"
         >
-          <button
-            role="radio"
-            aria-checked={activePersona === 'companion'}
-            onClick={() => onPersonaChange('companion')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition-colors ${
-              activePersona === 'companion'
-                ? 'bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30'
-                : 'text-stone-400 hover:text-stone-200'
-            }`}
-            title="Warm, natural and welcoming conversational guide"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Companion</span>
-          </button>
-          <button
-            role="radio"
-            aria-checked={activePersona === 'detective'}
-            onClick={() => onPersonaChange('detective')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition-colors ${
-              activePersona === 'detective'
-                ? 'bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30'
-                : 'text-stone-400 hover:text-stone-200'
-            }`}
-            title="Deductive, clue-driven film investigator for forgotten movies"
-          >
-            <Search className="w-3.5 h-3.5" />
-            <span>Detective</span>
-          </button>
-          <button
-            role="radio"
-            aria-checked={activePersona === 'cinephile'}
-            onClick={() => onPersonaChange('cinephile')}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded transition-colors ${
-              activePersona === 'cinephile'
-                ? 'bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30'
-                : 'text-stone-400 hover:text-stone-200'
-            }`}
-            title="Curated, international, and independent film enthusiast"
-          >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Cinephile</span>
-          </button>
+          {(['companion', 'detective', 'cinephile'] as PersonaStyle[]).map((persona) => {
+            const isActive = activePersona === persona;
+            const label =
+              persona === 'companion'
+                ? 'Companion'
+                : persona === 'detective'
+                ? 'Detective'
+                : 'Cinephile';
+            return (
+              <button
+                key={persona}
+                role="radio"
+                aria-checked={isActive}
+                onClick={() => onPersonaChange(persona)}
+                className={`px-3.5 py-1 rounded-full transition-all whitespace-nowrap shrink-0 ${
+                  isActive
+                    ? 'bg-[#E7FE55] text-black font-semibold shadow-xs'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white font-normal'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-1.5">
+        {/* Zone 3: Theme Toggle & Action Controls */}
+        <div className="flex items-center gap-2 shrink-0">
           {messageCount > 0 && (
             <button
               onClick={onClearChat}
-              className="px-2.5 py-1.5 text-xs text-stone-400 hover:text-red-300 hover:bg-red-950/30 rounded-md border border-transparent hover:border-red-900/40 transition-colors flex items-center gap-1"
+              className="px-3 py-1.5 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/10 rounded-full border border-black/10 dark:border-white/10 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
               title="Clear current session messages"
               aria-label="Clear conversation"
             >
@@ -111,19 +93,39 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
+          {/* Light / Dark Theme Toggle */}
+          <button
+            onClick={onToggleTheme}
+            className="group px-3 py-1.5 text-xs font-medium rounded-full border border-black/15 dark:border-white/15 bg-white dark:bg-[#141518] text-black dark:text-white hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] hover:text-black dark:hover:text-black transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="w-3.5 h-3.5 text-[#E7FE55] group-hover:text-black transition-colors" />
+                <span>Light</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-3.5 h-3.5 text-black" />
+                <span>Dark</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={onOpenDevTest}
-            className="px-2.5 py-1.5 text-xs text-stone-300 hover:text-amber-300 bg-white/5 hover:bg-white/10 rounded-md border border-white/10 transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs font-medium text-black dark:text-black bg-[#F8D4FE] hover:opacity-90 rounded-full transition-opacity flex items-center gap-1.5 whitespace-nowrap shrink-0"
             title="Developer Diagnostics & 06_TEST Scenarios"
             aria-label="Developer diagnostics and tests"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-            <span className="font-mono text-[11px] hidden sm:inline">Lab & Specs</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-black" />
+            <span className="hidden sm:inline">Lab &amp; Specs</span>
           </button>
 
           <button
             onClick={onOpenSettings}
-            className="p-1.5 text-stone-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-md border border-white/10 transition-colors"
+            className="p-2 text-black dark:text-white bg-white dark:bg-[#141518] hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] dark:hover:text-black rounded-full border border-black/15 dark:border-white/15 transition-colors shrink-0"
             title="Preferences & Privacy Settings"
             aria-label="Open settings"
           >
@@ -134,3 +136,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+
