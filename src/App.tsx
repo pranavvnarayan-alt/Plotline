@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Message, PersonaStyle, FilmCardData } from './types';
+import { Message, PersonaStyle, ChatSession } from './types';
 import { Header } from './components/Header';
 import { WelcomeState } from './components/WelcomeState';
 import { ChatMessage } from './components/ChatMessage';
@@ -12,10 +12,31 @@ import { PlotlineLogo } from './components/PlotlineLogo';
 import { Composer } from './components/Composer';
 import { SettingsModal } from './components/SettingsModal';
 import { DevTestModal } from './components/DevTestModal';
+import { ChatLibraryDrawer } from './components/ChatLibraryDrawer';
+import {
+  CHAT_LIBRARY_STORAGE_KEY,
+  upsertChatSession,
+  buildSessionHistoryPayload,
+} from './utils/chatLibrary';
 import { AlertCircle, RotateCcw } from 'lucide-react';
 
 export default function App() {
+  const [activeSessionId, setActiveSessionId] = useState<string>(() => `session-${Date.now()}`);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = window.localStorage.getItem(CHAT_LIBRARY_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch {
+        // Ignore storage errors
+      }
+    }
+    return [];
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [activePersona, setActivePersona] = useState<PersonaStyle>('companion');
   const [userRegion, setUserRegion] = useState('IN');
@@ -48,6 +69,24 @@ export default function App() {
     }
   }, [theme]);
 
+  // Persist chatSessions to localStorage whenever they change
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(CHAT_LIBRARY_STORAGE_KEY, JSON.stringify(chatSessions));
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [chatSessions]);
+
+  // Automatically sync current active conversation into chatSessions whenever messages update
+  useEffect(() => {
+    if (messages.length > 0) {
+      setChatSessions((prev) =>
+        upsertChatSession(prev, activeSessionId, messages, activePersona)
+      );
+    }
+  }, [messages, activeSessionId, activePersona]);
+
   const handleToggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
@@ -56,9 +95,10 @@ export default function App() {
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Modals state
+  // Modals & Drawer state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDevTestOpen, setIsDevTestOpen] = useState(false);
+  const [isChatLibraryOpen, setIsChatLibraryOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -96,14 +136,11 @@ export default function App() {
       image_preview: image?.previewUrl,
     };
 
+    // Build history payload BEFORE appending the new message, preserving full session memory
+    const historyPayload = buildSessionHistoryPayload(messages, 12);
+
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
-
-    // Prepare history payload for server (max 8 prior turns)
-    const historyPayload = messages.slice(-8).map((m) => ({
-      role: m.role,
-      content: m.content,
-    }));
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -175,14 +212,55 @@ export default function App() {
     setIsLoading(false);
   };
 
-  const handleClearChat = () => {
-    setMessages([]);
-    setErrorMessage(null);
+  const stopActiveAudioAndRequests = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsLoading(false);
     if (currentAudioRef.current) {
       currentAudioRef.current.pause();
       currentAudioRef.current = null;
     }
     setPlayingAudioId(null);
+  };
+
+  const handleNewChat = () => {
+    stopActiveAudioAndRequests();
+    setActiveSessionId(`session-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
+    setMessages([]);
+    setErrorMessage(null);
+  };
+
+  const handleGoHome = () => {
+    stopActiveAudioAndRequests();
+    setIsChatLibraryOpen(false);
+    setIsSettingsOpen(false);
+    setIsDevTestOpen(false);
+    setActiveSessionId(`session-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
+    setMessages([]);
+    setErrorMessage(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectSession = (sessionId: string) => {
+    const target = chatSessions.find((s) => s.id === sessionId);
+    if (!target) return;
+    stopActiveAudioAndRequests();
+    setActiveSessionId(target.id);
+    setMessages(target.messages);
+    if (target.persona) {
+      setActivePersona(target.persona);
+    }
+    setErrorMessage(null);
+  };
+
+  const handleDeleteSession = (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setChatSessions((prev) => prev.filter((s) => s.id !== sessionId));
+    if (sessionId === activeSessionId) {
+      handleNewChat();
+    }
   };
 
   // Text-To-Speech handler
@@ -252,10 +330,25 @@ export default function App() {
         onPersonaChange={setActivePersona}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDevTest={() => setIsDevTestOpen(true)}
-        onClearChat={handleClearChat}
+        onNewChat={handleNewChat}
+        onGoHome={handleGoHome}
+        onOpenChatLibrary={() => setIsChatLibraryOpen(true)}
+        savedChatCount={chatSessions.length}
         messageCount={messages.length}
         theme={theme}
         onToggleTheme={handleToggleTheme}
+      />
+
+      {/* Slide-out Chat Library Drawer */}
+      <ChatLibraryDrawer
+        isOpen={isChatLibraryOpen}
+        onClose={() => setIsChatLibraryOpen(false)}
+        sessions={chatSessions}
+        activeSessionId={activeSessionId}
+        hasActiveMessages={messages.length > 0}
+        onSelectSession={handleSelectSession}
+        onNewChat={handleNewChat}
+        onDeleteSession={handleDeleteSession}
       />
 
       {/* Main Conversation Container */}

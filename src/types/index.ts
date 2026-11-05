@@ -61,6 +61,16 @@ export interface Message {
   reverse_search_matches?: Array<{ title: string; sourceUrl?: string }>;
 }
 
+export interface ChatSession {
+  id: string;
+  title: string;
+  preview: string;
+  createdAt: string;
+  updatedAt: string;
+  persona: PersonaStyle;
+  messages: Message[];
+}
+
 export interface SavedPreferences {
   memory_enabled: boolean;
   preferred_languages: string[];

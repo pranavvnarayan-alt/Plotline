@@ -87,8 +87,8 @@ export const WelcomeState: React.FC<WelcomeStateProps> = ({
             </div>
 
             <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/80 pt-4 whitespace-nowrap">
-              <span>Discovery Mode :</span>
-              <span className="font-medium">#E7FE55 &bull; MOOD &amp; PACE</span>
+              <span>Discovery Mode</span>
+              <span className="font-medium">MOOD &amp; PACE</span>
             </div>
           </button>
 
@@ -115,8 +115,8 @@ export const WelcomeState: React.FC<WelcomeStateProps> = ({
             </div>
 
             <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/80 pt-4 whitespace-nowrap">
-              <span>Detective Mode :</span>
-              <span className="font-medium">#F8D4FE &bull; CLUE MATCH</span>
+              <span>Detective Mode</span>
+              <span className="font-medium">CLUE MATCH</span>
             </div>
           </button>
         </div>
@@ -146,8 +146,7 @@ export const WelcomeState: React.FC<WelcomeStateProps> = ({
             </div>
 
             <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/75 pt-4 whitespace-nowrap">
-              <span>Curated Scope :</span>
-              <span className="font-medium">#F2F4FE</span>
+              <span>Curated Scope</span>
             </div>
           </button>
 
@@ -174,8 +173,7 @@ export const WelcomeState: React.FC<WelcomeStateProps> = ({
             </div>
 
             <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-white/75 pt-4 whitespace-nowrap">
-              <span>Watchmode &amp; OTT :</span>
-              <span className="font-medium">#000000</span>
+              <span>Watchmode &amp; OTT</span>
             </div>
           </button>
 
@@ -202,8 +200,7 @@ export const WelcomeState: React.FC<WelcomeStateProps> = ({
             </div>
 
             <div className="w-full flex items-center justify-between gap-2 text-[11px] font-mono text-black/75 pt-4 whitespace-nowrap">
-              <span>Live Verification :</span>
-              <span className="font-medium">#FFFFFF</span>
+              <span>Live Verification</span>
             </div>
           </button>
         </div>

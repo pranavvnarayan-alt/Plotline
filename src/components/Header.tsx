@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Sliders, ShieldCheck, Trash2, Sun, Moon } from 'lucide-react';
+import { Sliders, ShieldCheck, Plus, Sun, Moon, Menu } from 'lucide-react';
 import { PersonaStyle } from '../types';
 import { PlotlineLogo } from './PlotlineLogo';
 
@@ -13,7 +13,10 @@ interface HeaderProps {
   onPersonaChange: (persona: PersonaStyle) => void;
   onOpenSettings: () => void;
   onOpenDevTest: () => void;
-  onClearChat: () => void;
+  onNewChat: () => void;
+  onGoHome: () => void;
+  onOpenChatLibrary: () => void;
+  savedChatCount: number;
   messageCount: number;
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
@@ -24,27 +27,52 @@ export const Header: React.FC<HeaderProps> = ({
   onPersonaChange,
   onOpenSettings,
   onOpenDevTest,
-  onClearChat,
-  messageCount,
+  onNewChat,
+  onGoHome,
+  onOpenChatLibrary,
+  savedChatCount,
   theme,
   onToggleTheme,
 }) => {
   return (
     <header className="sticky top-0 z-30 w-full bg-[#F2F4FE]/90 dark:bg-[#000000]/90 backdrop-blur-md border-b border-black/10 dark:border-white/10 px-4 sm:px-6 py-3.5 transition-colors duration-200">
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-        {/* Zone 1: Brand identity with the Plotline P-film-strip logo */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#000000] dark:bg-[#E7FE55] text-[#E7FE55] dark:text-[#000000] flex items-center justify-center border border-black/15 dark:border-white/15 shadow-xs transition-colors">
-            <PlotlineLogo className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight leading-none text-black dark:text-white whitespace-nowrap">
-              Plotline
-            </span>
-            <span className="text-[9px] font-sans font-medium uppercase tracking-widest text-neutral-500 dark:text-[#F8D4FE] mt-0.5">
-              Cinema Companion
-            </span>
-          </div>
+        {/* Zone 1: Hamburger Menu (Chat Library) + Clickable Brand Identity */}
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={onOpenChatLibrary}
+            className="relative p-2 rounded-xl bg-white dark:bg-[#141518] text-black dark:text-white hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] hover:text-black dark:hover:text-black border border-black/15 dark:border-white/15 transition-colors cursor-pointer shrink-0"
+            title="Open Chat Library"
+            aria-label="Open Chat Library"
+          >
+            <Menu className="w-4 h-4" />
+            {savedChatCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-[#F8D4FE] text-black font-mono text-[10px] font-semibold flex items-center justify-center border border-black/20">
+                {savedChatCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={onGoHome}
+            className="group flex items-center gap-3 text-left cursor-pointer focus:outline-none"
+            title="Go to Plotline Homepage"
+            aria-label="Go to Plotline Homepage"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#000000] dark:bg-[#E7FE55] text-[#E7FE55] dark:text-[#000000] flex items-center justify-center border border-black/15 dark:border-white/15 shadow-xs transition-transform duration-150 group-hover:scale-105">
+              <PlotlineLogo className="w-5 h-5" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-lg font-bold tracking-tight leading-none text-black dark:text-white whitespace-nowrap group-hover:opacity-80 transition-opacity">
+                Plotline
+              </span>
+              <span className="text-[9px] font-sans font-medium uppercase tracking-widest text-neutral-500 dark:text-[#F8D4FE] mt-0.5">
+                Cinema Companion
+              </span>
+            </div>
+          </button>
         </div>
 
         {/* Zone 2: Persona Selector */}
@@ -64,10 +92,11 @@ export const Header: React.FC<HeaderProps> = ({
             return (
               <button
                 key={persona}
+                type="button"
                 role="radio"
                 aria-checked={isActive}
                 onClick={() => onPersonaChange(persona)}
-                className={`px-3.5 py-1 rounded-full transition-all whitespace-nowrap shrink-0 ${
+                className={`px-3.5 py-1 rounded-full transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                   isActive
                     ? 'bg-[#E7FE55] text-black font-semibold shadow-xs'
                     : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white font-normal'
@@ -79,24 +108,24 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </div>
 
-        {/* Zone 3: Theme Toggle & Action Controls */}
+        {/* Zone 3: New Chat (+), Theme Toggle & Action Controls */}
         <div className="flex items-center gap-2 shrink-0">
-          {messageCount > 0 && (
-            <button
-              onClick={onClearChat}
-              className="px-3 py-1.5 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/10 rounded-full border border-black/10 dark:border-white/10 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
-              title="Clear current session messages"
-              aria-label="Clear conversation"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">New Chat</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onNewChat}
+            className="px-3 py-1.5 text-xs font-medium text-neutral-800 dark:text-neutral-200 bg-white dark:bg-[#141518] hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] hover:text-black dark:hover:text-black rounded-full border border-black/15 dark:border-white/15 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+            title="Start a new chat"
+            aria-label="New Chat"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.2]" />
+            <span className="hidden sm:inline">New Chat</span>
+          </button>
 
           {/* Light / Dark Theme Toggle */}
           <button
+            type="button"
             onClick={onToggleTheme}
-            className="group px-3 py-1.5 text-xs font-medium rounded-full border border-black/15 dark:border-white/15 bg-white dark:bg-[#141518] text-black dark:text-white hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] hover:text-black dark:hover:text-black transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
+            className="group px-3 py-1.5 text-xs font-medium rounded-full border border-black/15 dark:border-white/15 bg-white dark:bg-[#141518] text-black dark:text-white hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] hover:text-black dark:hover:text-black transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
             title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
@@ -114,8 +143,9 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={onOpenDevTest}
-            className="px-3 py-1.5 text-xs font-medium text-black dark:text-black bg-[#F8D4FE] hover:opacity-90 rounded-full transition-opacity flex items-center gap-1.5 whitespace-nowrap shrink-0"
+            className="px-3 py-1.5 text-xs font-medium text-black dark:text-black bg-[#F8D4FE] hover:opacity-90 rounded-full transition-opacity flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
             title="Developer Diagnostics & 06_TEST Scenarios"
             aria-label="Developer diagnostics and tests"
           >
@@ -124,8 +154,9 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={onOpenSettings}
-            className="p-2 text-black dark:text-white bg-white dark:bg-[#141518] hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] dark:hover:text-black rounded-full border border-black/15 dark:border-white/15 transition-colors shrink-0"
+            className="p-2 text-black dark:text-white bg-white dark:bg-[#141518] hover:bg-[#E7FE55] dark:hover:bg-[#E7FE55] dark:hover:text-black rounded-full border border-black/15 dark:border-white/15 transition-colors shrink-0 cursor-pointer"
             title="Preferences & Privacy Settings"
             aria-label="Open settings"
           >
